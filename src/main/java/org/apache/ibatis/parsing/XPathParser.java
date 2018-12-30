@@ -54,15 +54,38 @@ public class XPathParser {
    * </p>
    * @since 3.5.0
    */
+  /**
+   * 是基于Java XPath 的解析器，专门用于解析Mybatis 的各种xml文件
+   * */
   public static final String KEY_USE_XSD = "org.mybatis.useXsd";
 
   private static final String USE_XSD_DEFAULT_VALUE = "false";
 
+  /**
+    XML Document 对象
+  */
   private final Document document;
+  /**
+    是否需要校验
+  */
   private boolean validation;
+  /**
+    XML 实体解析器 sax的, Mybatis 自定义实现，可以使用本地DTD文件，避免了从网络下载的情况
+   Spring 也有一个类似的实现
+  */
   private EntityResolver entityResolver;
+  /**
+   变量 Properties 对象，用来替换需要动态配置的属性值
+  */
   private Properties variables;
+  /**
+    使用XPath 对XML文档进行校验的方法
+  */
   private XPath xpath;
+
+  /**
+    构造方法太多了，只挑一些来看
+  */
 
   public XPathParser(String xml) {
     commonConstructor(false, null, null);
@@ -124,7 +147,11 @@ public class XPathParser {
     this.document = document;
   }
 
+  /**
+   只看这个构造方法
+  */
   public XPathParser(String xml, boolean validation, Properties variables, EntityResolver entityResolver) {
+    // 简单的初始化方法
     commonConstructor(validation, variables, entityResolver);
     this.document = createDocument(new InputSource(new StringReader(xml)));
   }
@@ -148,12 +175,19 @@ public class XPathParser {
     this.variables = variables;
   }
 
+  /**
+    有很多 eval 开头的方法，基本都是用于获取各种类型的元素或者节点的值
+  */
   public String evalString(String expression) {
     return evalString(document, expression);
   }
-
+  /**
+    xml中的动态内容可以在这里进行替换
+  */
   public String evalString(Object root, String expression) {
+      // 先获取节点的值，这里指定了是 String
     String result = (String) evaluate(expression, root, XPathConstants.STRING);
+    // 动态替换String中的类似于 ${..} 的值
     result = PropertyParser.parse(result, variables);
     return result;
   }
@@ -228,9 +262,17 @@ public class XPathParser {
     if (node == null) {
       return null;
     }
+    // 封装为XNode ,主要也是为了动态值的替换
+      // 构造参数中的 this 说明了这个XNode携带了该解析器类的实例，用于替换动态值
     return new XNode(this, node, variables);
   }
-
+    /**
+        解析的方法基本都由这个来实现
+        @param expression 表达式,XPath的表达式
+        @param root 指定的节点
+        @param returnType 返回的类型
+        @return 获取的指定元素或节点的值
+    */
   private Object evaluate(String expression, Object root, QName returnType) {
     try {
       return xpath.evaluate(expression, root, returnType);
@@ -238,7 +280,9 @@ public class XPathParser {
       throw new BuilderException("Error evaluating XPath.  Cause: " + e, e);
     }
   }
-
+  /**
+    利用XPath 的API 解析XML文件构造 document 对象
+  */
   private Document createDocument(InputSource inputSource) {
     // important: this must only be called AFTER common constructor
     try {
