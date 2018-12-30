@@ -71,6 +71,7 @@ public class XPathParser {
   private boolean validation;
   /**
     XML 实体解析器 sax的, Mybatis 自定义实现，可以使用本地DTD文件，避免了从网络下载的情况
+   Mybatis 的实现类是 XMLMapperEntityResolver
    Spring 也有一个类似的实现
   */
   private EntityResolver entityResolver;

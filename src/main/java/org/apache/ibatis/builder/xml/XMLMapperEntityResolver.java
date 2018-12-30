@@ -30,6 +30,10 @@ import org.xml.sax.SAXException;
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
+
+/**
+ 该类主要用于从本地加载 mybatis3-config.dtd 和 mybatis-3-mapper.dtd 两个文件
+*/
 public class XMLMapperEntityResolver implements EntityResolver {
 
   private static final String IBATIS_CONFIG_SYSTEM = "ibatis-3-config.dtd";
@@ -38,8 +42,9 @@ public class XMLMapperEntityResolver implements EntityResolver {
   private static final String MYBATIS_MAPPER_SYSTEM = "mybatis-3-mapper.dtd";
   private static final String MYBATIS_CONFIG = "mybatis-config.xsd";
   private static final String MYBATIS_MAPPER = "mybatis-mapper.xsd";
-
+  // 本地 mybatis-3-config.dtd 文件
   private static final String MYBATIS_CONFIG_DTD = "org/apache/ibatis/builder/xml/mybatis-3-config.dtd";
+    // 本地 mybatis-3-mapper.dtd 文件
   private static final String MYBATIS_MAPPER_DTD = "org/apache/ibatis/builder/xml/mybatis-3-mapper.dtd";
   private static final String MYBATIS_CONFIG_XSD = "org/apache/ibatis/builder/xml/mybatis-config.xsd";
   private static final String MYBATIS_MAPPER_XSD = "org/apache/ibatis/builder/xml/mybatis-mapper.xsd";
