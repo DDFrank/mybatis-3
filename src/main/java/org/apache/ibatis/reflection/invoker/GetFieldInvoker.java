@@ -23,17 +23,21 @@ import org.apache.ibatis.reflection.Reflector;
  * @author Clinton Begin
  */
 public class GetFieldInvoker implements Invoker {
+
   private final Field field;
 
   public GetFieldInvoker(Field field) {
     this.field = field;
   }
-
+  /**
+    从 Filed 中获取对象, get 方法一般没有参数，所以这里的参数几乎没用
+  */
   @Override
   public Object invoke(Object target, Object[] args) throws IllegalAccessException {
     try {
       return field.get(target);
     } catch (IllegalAccessException e) {
+      // 假如是私有的不让获取就设置一下获取
       if (Reflector.canControlMemberAccessible()) {
         field.setAccessible(true);
         return field.get(target);

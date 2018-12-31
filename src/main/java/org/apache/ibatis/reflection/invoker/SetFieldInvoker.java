@@ -28,7 +28,9 @@ public class SetFieldInvoker implements Invoker {
   public SetFieldInvoker(Field field) {
     this.field = field;
   }
-
+  /**
+    主要调用 set 方法
+  */
   @Override
   public Object invoke(Object target, Object[] args) throws IllegalAccessException {
     try {
