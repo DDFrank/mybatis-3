@@ -29,6 +29,9 @@ import org.w3c.dom.NodeList;
 /**
  * @author Clinton Begin
  */
+/**
+ 对 Node 的包装，提供了许多mybatis自己的功能
+*/
 public class XNode {
 
   private final Node node;
