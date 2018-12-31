@@ -22,13 +22,20 @@ import org.apache.ibatis.reflection.ReflectionException;
 /**
  * @author Clinton Begin
  */
+/**
+  属性名相关的工具类方法
+*/
 public final class PropertyNamer {
 
   private PropertyNamer() {
     // Prevent Instantiation of Static Class
   }
 
+/**
+  根据方法名，获得对应的属性名
+*/
   public static String methodToProperty(String name) {
+    // 只能处理 is set get 开头的方法
     if (name.startsWith("is")) {
       name = name.substring(2);
     } else if (name.startsWith("get") || name.startsWith("set")) {
@@ -36,22 +43,22 @@ public final class PropertyNamer {
     } else {
       throw new ReflectionException("Error parsing property name '" + name + "'.  Didn't start with 'is', 'get' or 'set'.");
     }
-
+    // 首字母大写的时候改为小写
     if (name.length() == 1 || (name.length() > 1 && !Character.isUpperCase(name.charAt(1)))) {
       name = name.substring(0, 1).toLowerCase(Locale.ENGLISH) + name.substring(1);
     }
 
     return name;
   }
-
+  // 判断是否为 is get set 方法
   public static boolean isProperty(String name) {
     return name.startsWith("get") || name.startsWith("set") || name.startsWith("is");
   }
-
+  // 判断是否为 getter 方法
   public static boolean isGetter(String name) {
     return name.startsWith("get") || name.startsWith("is");
   }
-
+  // 判断是否为 setter 方法
   public static boolean isSetter(String name) {
     return name.startsWith("set");
   }

@@ -20,23 +20,40 @@ import java.util.Iterator;
 /**
  * @author Clinton Begin
  */
+/**
+  实现迭代器，属性分词器，支持迭代器式的访问方式
+  比如 访问 order[0].item[0].name 的时候 可以拆成 order[0] item[0] name 三段
+*/
 public class PropertyTokenizer implements Iterator<PropertyTokenizer> {
+  // 待解析的字符串
   private String name;
+  // 索引的 name indexdName = name + ('[' + index + ']')?
   private final String indexedName;
+  /*
+  *   编号
+  *   对于 name[0] index = 0
+  *   对于 Map map[key] index = key
+  * */
   private String index;
+  // 剩余的字符串
   private final String children;
 
   public PropertyTokenizer(String fullname) {
+    // "." 作为属性的分隔
     int delim = fullname.indexOf('.');
     if (delim > -1) {
+      // 找出当前的属性名
       name = fullname.substring(0, delim);
+      // 剩下的字符串
       children = fullname.substring(delim + 1);
     } else {
+      // 没有 . 的话整个都是属性名了
       name = fullname;
       children = null;
     }
     indexedName = name;
     delim = name.indexOf('[');
+    // 假如有 [ 的话，就分别赋值 index
     if (delim > -1) {
       index = name.substring(delim + 1, name.length() - 1);
       name = name.substring(0, delim);
@@ -59,11 +76,13 @@ public class PropertyTokenizer implements Iterator<PropertyTokenizer> {
     return children;
   }
 
+  // 看看还有没有剩下的字符串
   @Override
   public boolean hasNext() {
     return children != null;
   }
 
+  // 获取下一个
   @Override
   public PropertyTokenizer next() {
     return new PropertyTokenizer(children);

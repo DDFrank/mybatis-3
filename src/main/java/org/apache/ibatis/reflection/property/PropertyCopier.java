@@ -22,19 +22,27 @@ import org.apache.ibatis.reflection.Reflector;
 /**
  * @author Clinton Begin
  */
+/**
+  属性复制器
+*/
 public final class PropertyCopier {
 
   private PropertyCopier() {
     // Prevent Instantiation of Static Class
   }
-
+  /**
+    将 sourceBean 的属性复制给 destinationBean 中
+  */
   public static void copyBeanProperties(Class<?> type, Object sourceBean, Object destinationBean) {
     Class<?> parent = type;
+    // 循环，从当前类开始，不断复制到父类，直到父类不存在
     while (parent != null) {
+      // 获取全部的成员属性
       final Field[] fields = parent.getDeclaredFields();
       for(Field field : fields) {
         try {
           try {
+            // 复制属性
             field.set(destinationBean, field.get(sourceBean));
           } catch (IllegalAccessException e) {
             if (Reflector.canControlMemberAccessible()) {
@@ -48,6 +56,7 @@ public final class PropertyCopier {
           // Nothing useful to do, will only fail on final fields, which will be ignored.
         }
       }
+      // 获得父类
       parent = parent.getSuperclass();
     }
   }
