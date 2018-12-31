@@ -23,6 +23,9 @@ import java.util.Properties;
  * 
  * @author Clinton Begin
  */
+/**
+  用于创建指定类的对象的接口
+*/
 public interface ObjectFactory {
 
   /**
@@ -36,6 +39,9 @@ public interface ObjectFactory {
    * @param type Object type
    * @return
    */
+  /**
+    调用无参构造器去创建对象
+  */
   <T> T create(Class<T> type);
 
   /**
@@ -45,6 +51,11 @@ public interface ObjectFactory {
    * @param constructorArgs Constructor argument values
    * @return
    */
+  /**
+    使用指定类构造器传入参数构造对象
+    @param constructorArgTypes 参数的类型列表
+    @param constructorArgs 参数的值
+  */
   <T> T create(Class<T> type, List<Class<?>> constructorArgTypes, List<Object> constructorArgs);
   
   /**
@@ -55,6 +66,9 @@ public interface ObjectFactory {
    * @return whether it is a collection or not
    * @since 3.1.0
    */
+  /**
+    判断指定类是否为集合类
+  */
   <T> boolean isCollection(Class<T> type);
 
 }
