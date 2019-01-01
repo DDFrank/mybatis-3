@@ -29,6 +29,9 @@ import org.apache.ibatis.reflection.property.PropertyTokenizer;
 /**
  * @author Clinton Begin
  */
+/**
+  用于普通对象的 objectWrapper 的实现类，比如POJO类
+*/
 public class BeanWrapper extends BaseWrapper {
 
   private final Object object;
@@ -42,14 +45,19 @@ public class BeanWrapper extends BaseWrapper {
 
   @Override
   public Object get(PropertyTokenizer prop) {
+    // 假如是集合的话，就获得集合的指定属性的值
     if (prop.getIndex() != null) {
       Object collection = resolveCollection(prop, object);
       return getCollectionValue(prop, collection);
     } else {
+      // 获取属性的值
       return getBeanProperty(prop, object);
     }
   }
 
+  /**
+    也是区分集合和普通属性
+  */
   @Override
   public void set(PropertyTokenizer prop, Object value) {
     if (prop.getIndex() != null) {
@@ -89,18 +97,24 @@ public class BeanWrapper extends BaseWrapper {
       return metaClass.getSetterType(name);
     }
   }
-
+/**
+  获取指定属性的 getting 方法的返回类型
+*/
   @Override
   public Class<?> getGetterType(String name) {
     PropertyTokenizer prop = new PropertyTokenizer(name);
+    // 还是利用分词器
     if (prop.hasNext()) {
       MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
+      // 假如返回值没有那么就基于 metaClass 获取返回类型
       if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
         return metaClass.getGetterType(name);
       } else {
+        // 有值的话就利用 metaObject 获取返回类型
         return metaValue.getGetterType(prop.getChildren());
       }
     } else {
+      // 递归判断子表达式的类型
       return metaClass.getGetterType(name);
     }
   }
@@ -143,6 +157,9 @@ public class BeanWrapper extends BaseWrapper {
     }
   }
 
+  /**
+    创建指定对象的属性值
+  */
   @Override
   public MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop, ObjectFactory objectFactory) {
     MetaObject metaValue;
@@ -159,8 +176,10 @@ public class BeanWrapper extends BaseWrapper {
 
   private Object getBeanProperty(PropertyTokenizer prop, Object object) {
     try {
+      // 获取该属性的get方法
       Invoker method = metaClass.getGetInvoker(prop.getName());
       try {
+        // 获取其值
         return method.invoke(object, NO_ARGUMENTS);
       } catch (Throwable t) {
         throw ExceptionUtil.unwrapThrowable(t);

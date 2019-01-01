@@ -30,6 +30,9 @@ import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
 /**
  * @author Clinton Begin
  */
+/**
+ 对象的元数据，提供了对象的属性值的获得和设置等方法
+*/
 public class MetaObject {
 
   private final Object originalObject;

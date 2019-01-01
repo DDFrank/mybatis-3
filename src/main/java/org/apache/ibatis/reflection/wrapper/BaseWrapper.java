@@ -25,6 +25,9 @@ import org.apache.ibatis.reflection.property.PropertyTokenizer;
 /**
  * @author Clinton Begin
  */
+/**
+  为子类提供了 属性值的获取和设置的公用方法
+*/
 public abstract class BaseWrapper implements ObjectWrapper {
 
   protected static final Object[] NO_ARGUMENTS = new Object[0];
@@ -34,6 +37,9 @@ public abstract class BaseWrapper implements ObjectWrapper {
     this.metaObject = metaObject;
   }
 
+  /**
+    获得指定属性的值
+  */
   protected Object resolveCollection(PropertyTokenizer prop, Object object) {
     if ("".equals(prop.getName())) {
       return object;
@@ -42,6 +48,9 @@ public abstract class BaseWrapper implements ObjectWrapper {
     }
   }
 
+  /**
+    获得集合中指定位置的值, 以下列举了各种集合的情况
+  */
   protected Object getCollectionValue(PropertyTokenizer prop, Object collection) {
     if (collection instanceof Map) {
       return ((Map) collection).get(prop.getIndex());
@@ -73,6 +82,9 @@ public abstract class BaseWrapper implements ObjectWrapper {
     }
   }
 
+  /**
+    设置集合中指定位置的值
+  */
   protected void setCollectionValue(PropertyTokenizer prop, Object collection, Object value) {
     if (collection instanceof Map) {
       ((Map) collection).put(prop.getIndex(), value);
