@@ -568,10 +568,12 @@ public class Reflector {
    * @return True if the object has a readable property by the name
    */
   public boolean hasGetter(String propertyName) {
+    // 缓存中有就有
     return getMethods.keySet().contains(propertyName);
   }
 
   public String findPropertyName(String name) {
+    // 返回驼峰命名的属性
     return caseInsensitivePropertyMap.get(name.toUpperCase(Locale.ENGLISH));
   }
 }
