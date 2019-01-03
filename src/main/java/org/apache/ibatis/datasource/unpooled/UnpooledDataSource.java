@@ -36,20 +36,31 @@ import org.apache.ibatis.io.Resources;
  * @author Eduardo Macarron
  */
 public class UnpooledDataSource implements DataSource {
-  
-  private ClassLoader driverClassLoader;
-  private Properties driverProperties;
-  private static Map<String, Driver> registeredDrivers = new ConcurrentHashMap<>();
 
+  // Driver 类加载器
+  private ClassLoader driverClassLoader;
+  // Driver 属性
+  private Properties driverProperties;
+  /*
+  * 已经注册的 Driver 映射
+  *
+  * KEY : Driver 类名
+  * VALUE: Driver 对象
+  * */
+  private static Map<String, Driver> registeredDrivers = new ConcurrentHashMap<>();
+  // Driver 类名
   private String driver;
+  // 数据库的Url
   private String url;
   private String username;
   private String password;
-
+  // 是否自动提交事务
   private Boolean autoCommit;
+  // 默认的事务隔离级别
   private Integer defaultTransactionIsolationLevel;
 
   static {
+    // 注册驱动
     Enumeration<Driver> drivers = DriverManager.getDrivers();
     while (drivers.hasMoreElements()) {
       Driver driver = drivers.nextElement();
@@ -197,16 +208,24 @@ public class UnpooledDataSource implements DataSource {
   }
 
   private Connection doGetConnection(Properties properties) throws SQLException {
+    // 初始化 Driver, properties 中已经含有Driver username和password
     initializeDriver();
+    // 获得Connection
     Connection connection = DriverManager.getConnection(url, properties);
+    // 配置 connection 对象
     configureConnection(connection);
     return connection;
   }
 
+  /*
+  * 初始化驱动
+  * */
   private synchronized void initializeDriver() throws SQLException {
+    // 如果 Driver 还没注册，就进行注册
     if (!registeredDrivers.containsKey(driver)) {
       Class<?> driverType;
       try {
+        // 获取 Driver 类, 大部分时候都是 com.mysql.jdbc.Driver
         if (driverClassLoader != null) {
           driverType = Class.forName(driver, true, driverClassLoader);
         } else {
@@ -214,7 +233,9 @@ public class UnpooledDataSource implements DataSource {
         }
         // DriverManager requires the driver to be loaded via the system ClassLoader.
         // http://www.kfu.com/~nsayer/Java/dyn-jdbc.html
+        // 获取实例
         Driver driverInstance = (Driver)driverType.newInstance();
+        // 使用代理类只是为了使用 Mybatis 自己的logger,在这里注册一下
         DriverManager.registerDriver(new DriverProxy(driverInstance));
         registeredDrivers.put(driver, driverInstance);
       } catch (Exception e) {
@@ -224,9 +245,11 @@ public class UnpooledDataSource implements DataSource {
   }
 
   private void configureConnection(Connection conn) throws SQLException {
+    // 设置自动提交
     if (autoCommit != null && autoCommit != conn.getAutoCommit()) {
       conn.setAutoCommit(autoCommit);
     }
+    // 设置事务的隔离级别
     if (defaultTransactionIsolationLevel != null) {
       conn.setTransactionIsolation(defaultTransactionIsolationLevel);
     }
