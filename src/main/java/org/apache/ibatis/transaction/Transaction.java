@@ -31,12 +31,18 @@ public interface Transaction {
    * @return DataBase connection
    * @throws SQLException
    */
+  /*
+  * 获取真实的数据库连接
+  * */
   Connection getConnection() throws SQLException;
 
   /**
    * Commit inner database connection.
    * @throws SQLException
    */
+  /*
+  * 提交事务
+  * */
   void commit() throws SQLException;
 
   /**

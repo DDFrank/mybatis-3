@@ -34,6 +34,12 @@ import org.apache.ibatis.transaction.Transaction;
  *
  * @see ManagedTransactionFactory
  */
+/*
+* 基于容器管理的事务实现类
+* 该类并没有自动提交事务的属性，commit 和 rollback 也是空的，说明事务的管理就交给了容器，
+* 所以，在跟Spring配合的时候，
+* 实际事务管理的是 org.mybatis.spring.transaction.SpringManagedTransaction 这个类
+ * */
 public class ManagedTransaction implements Transaction {
 
   private static final Log log = LogFactory.getLog(ManagedTransaction.class);
@@ -41,6 +47,7 @@ public class ManagedTransaction implements Transaction {
   private DataSource dataSource;
   private TransactionIsolationLevel level;
   private Connection connection;
+  // 是否关闭连接
   private final boolean closeConnection;
 
   public ManagedTransaction(Connection connection, boolean closeConnection) {
@@ -74,6 +81,7 @@ public class ManagedTransaction implements Transaction {
 
   @Override
   public void close() throws SQLException {
+    // 假如开启了关闭连接功能，就关闭连接
     if (this.closeConnection && this.connection != null) {
       if (log.isDebugEnabled()) {
         log.debug("Closing JDBC Connection [" + this.connection + "]");

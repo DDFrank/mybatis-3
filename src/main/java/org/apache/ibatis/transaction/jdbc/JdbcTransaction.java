@@ -35,6 +35,9 @@ import org.apache.ibatis.transaction.TransactionException;
  *
  * @see JdbcTransactionFactory
  */
+/*
+* 基于JDBCTransaction 的事务实现类
+* */
 public class JdbcTransaction implements Transaction {
 
   private static final Log log = LogFactory.getLog(JdbcTransaction.class);
@@ -57,6 +60,7 @@ public class JdbcTransaction implements Transaction {
   @Override
   public Connection getConnection() throws SQLException {
     if (connection == null) {
+      // 连接未空时进行创建
       openConnection();
     }
     return connection;
@@ -64,6 +68,7 @@ public class JdbcTransaction implements Transaction {
 
   @Override
   public void commit() throws SQLException {
+    // 并非自动提交的话就提交一下
     if (connection != null && !connection.getAutoCommit()) {
       if (log.isDebugEnabled()) {
         log.debug("Committing JDBC Connection [" + connection + "]");
@@ -74,6 +79,7 @@ public class JdbcTransaction implements Transaction {
 
   @Override
   public void rollback() throws SQLException {
+    // 非自动提交，就回滚事务
     if (connection != null && !connection.getAutoCommit()) {
       if (log.isDebugEnabled()) {
         log.debug("Rolling back JDBC Connection [" + connection + "]");
@@ -85,14 +91,18 @@ public class JdbcTransaction implements Transaction {
   @Override
   public void close() throws SQLException {
     if (connection != null) {
+      // 重置连接为自动提交
       resetAutoCommit();
       if (log.isDebugEnabled()) {
         log.debug("Closing JDBC Connection [" + connection + "]");
       }
+      // 关闭连接
       connection.close();
     }
   }
-
+  /*
+  * 设置指定的 autoCommit 属性
+  * */
   protected void setDesiredAutoCommit(boolean desiredAutoCommit) {
     try {
       if (connection.getAutoCommit() != desiredAutoCommit) {
@@ -131,6 +141,9 @@ public class JdbcTransaction implements Transaction {
     }
   }
 
+  /*
+  * 没有连接的话，从数据源获取连接,并设置事务隔离级别
+  * */
   protected void openConnection() throws SQLException {
     if (log.isDebugEnabled()) {
       log.debug("Opening JDBC Connection");
