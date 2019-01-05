@@ -32,6 +32,9 @@ import org.apache.ibatis.io.Resources;
 /**
  * @author Clinton Begin
  */
+/*
+* 支持序列化值的 Cache 实现类
+* */
 public class SerializedCache implements Cache {
 
   private final Cache delegate;

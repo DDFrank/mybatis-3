@@ -22,10 +22,15 @@ import org.apache.ibatis.cache.Cache;
 /**
  * @author Clinton Begin
  */
+/*
+* 定时清空整个容器的 Cache 实现类
+* */
 public class ScheduledCache implements Cache {
 
   private final Cache delegate;
+  // 清空的间隔 毫秒
   protected long clearInterval;
+  // 最后清空时间 毫秒
   protected long lastClear;
 
   public ScheduledCache(Cache delegate) {
@@ -66,6 +71,7 @@ public class ScheduledCache implements Cache {
     return delegate.removeObject(key);
   }
 
+  // 清空缓存
   @Override
   public void clear() {
     lastClear = System.currentTimeMillis();
@@ -86,7 +92,7 @@ public class ScheduledCache implements Cache {
   public boolean equals(Object obj) {
     return delegate.equals(obj);
   }
-
+  // 判断是否要清空
   private boolean clearWhenStale() {
     if (System.currentTimeMillis() - lastClear > clearInterval) {
       clear();

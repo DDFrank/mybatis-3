@@ -38,7 +38,9 @@ import java.util.concurrent.locks.ReadWriteLock;
  *
  * @author Clinton Begin
  */
-
+/*
+* 容器接口，该缓存容器类似于 HashMap
+* */
 public interface Cache {
 
   /**
@@ -93,6 +95,9 @@ public interface Cache {
    * 
    * @return A ReadWriteLock 
    */
+  /*
+  * 该方法已经可以忽略
+  * */
   ReadWriteLock getReadWriteLock();
 
 }

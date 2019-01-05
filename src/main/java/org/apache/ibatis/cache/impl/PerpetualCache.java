@@ -25,10 +25,14 @@ import org.apache.ibatis.cache.CacheException;
 /**
  * @author Clinton Begin
  */
+/*
+* 永不过期的Cache实现类, 基于HashMap的实现类
+* 比较简单
+* */
 public class PerpetualCache implements Cache {
 
   private final String id;
-
+  // 缓存的数据
   private Map<Object, Object> cache = new HashMap<>();
 
   public PerpetualCache(String id) {

@@ -26,10 +26,15 @@ import org.apache.ibatis.cache.Cache;
  *
  * @author Clinton Begin
  */
+/*
+* 基于先进先出的淘汰机制的 Cache 实现类
+* */
 public class FifoCache implements Cache {
 
   private final Cache delegate;
+  // 双端队列，记录缓存键的添加
   private final Deque<Object> keyList;
+  // 队列的上限
   private int size;
 
   public FifoCache(Cache delegate) {
@@ -54,6 +59,7 @@ public class FifoCache implements Cache {
 
   @Override
   public void putObject(Object key, Object value) {
+    // 循环 keyList
     cycleKeyList(key);
     delegate.putObject(key, value);
   }
@@ -80,6 +86,7 @@ public class FifoCache implements Cache {
   }
 
   private void cycleKeyList(Object key) {
+    // 将 key 加入
     keyList.addLast(key);
     if (keyList.size() > size) {
       Object oldestKey = keyList.removeFirst();
