@@ -17,3 +17,11 @@
  * Type handlers.
  */
 package org.apache.ibatis.type;
+
+/*
+* 类型转换功能有两个主要的作用
+* 一个是 Mybatis 的别名机制
+* 一个是实现 JDBC 类型和 Java类型之间的转换 :
+*   - 为SQL语句绑定实参时
+*   - 映射结果集时
+* */

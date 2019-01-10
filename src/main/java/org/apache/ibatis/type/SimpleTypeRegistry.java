@@ -24,6 +24,9 @@ import java.util.Set;
 /**
  * @author Clinton Begin
  */
+/*
+* 简单类型注册表
+* */
 public class SimpleTypeRegistry {
 
   private static final Set<Class<?>> SIMPLE_TYPE_SET = new HashSet<>();

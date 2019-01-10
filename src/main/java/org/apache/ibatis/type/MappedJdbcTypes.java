@@ -24,6 +24,9 @@ import java.lang.annotation.Target;
 /**
  * @author Eduardo Macarron
  */
+/*
+* 匹配的 JDBC Type 类型的注解
+* */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

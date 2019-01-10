@@ -23,14 +23,20 @@ import java.sql.SQLException;
 /**
  * @author Clinton Begin
  */
+/*
+* 类型转换器
+* */
 public interface TypeHandler<T> {
-
+  /*
+  * 设置参数时用的方法
+  * - i 是参数的位置
+  * */
   void setParameter(PreparedStatement ps, int i, T parameter, JdbcType jdbcType) throws SQLException;
 
+  // 获取 结果集中指定字段的名字
   T getResult(ResultSet rs, String columnName) throws SQLException;
-
   T getResult(ResultSet rs, int columnIndex) throws SQLException;
-
+  // 获取 CallableStatement 的指定字段的值, 调用存储过程的对象
   T getResult(CallableStatement cs, int columnIndex) throws SQLException;
 
 }

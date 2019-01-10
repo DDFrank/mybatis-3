@@ -35,11 +35,15 @@ import org.apache.ibatis.io.Resources;
 /**
  * @author Clinton Begin
  */
+/*
+* 类型与别名的注册表
+* */
 public class TypeAliasRegistry {
 
   private final Map<String, Class<?>> TYPE_ALIASES = new HashMap<>();
 
   public TypeAliasRegistry() {
+    // 默认的类名与别名
     registerAlias("string", String.class);
 
     registerAlias("byte", Byte.class);
