@@ -24,8 +24,9 @@ import java.net.URL;
  * @author Clinton Begin
  */
 public class ClassLoaderWrapper {
-
+  // 默认 classLoader 对象,不存在该属性的构造方法。通过 ClassLoaderWrapper.defaultClassLoader = xxx 的方式进行设置
   ClassLoader defaultClassLoader;
+  // 系统 classLoader 对象, 在构造方法中，已经初始化
   ClassLoader systemClassLoader;
 
   ClassLoaderWrapper() {
@@ -138,16 +139,17 @@ public class ClassLoaderWrapper {
   URL getResourceAsURL(String resource, ClassLoader[] classLoader) {
 
     URL url;
-
+    // 遍历 ClassLoader 数组
     for (ClassLoader cl : classLoader) {
 
       if (null != cl) {
-
+        // 先获取一次
         // look for the resource as passed in...
         url = cl.getResource(resource);
 
         // ...but some class loaders want this leading "/", so we'll add it
         // and try again if we didn't find the resource
+        // 假如失败了，加上 / 再试一次
         if (null == url) {
           url = cl.getResource("/" + resource);
         }
@@ -161,7 +163,7 @@ public class ClassLoaderWrapper {
       }
 
     }
-
+    // 假如都找不到，就算了，返回Null
     // didn't find it anywhere.
     return null;
 

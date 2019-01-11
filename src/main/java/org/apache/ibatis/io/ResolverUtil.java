@@ -56,6 +56,10 @@ import org.apache.ibatis.logging.LogFactory;
  *
  * @author Tim Fennell
  */
+/*
+* 解析器工具类，用于获得指定目录符合条件的类
+* 策略模式的体现， Test接口为策略接口
+* */
 public class ResolverUtil<T> {
   /*
    * An instance of Log to use for logging in this class.
@@ -78,6 +82,7 @@ public class ResolverUtil<T> {
    * A Test that checks to see if each class is assignable to the provided class. Note
    * that this test will match the parent type itself if it is presented for matching.
    */
+  // 判断是否是指定类
   public static class IsA implements Test {
     private Class<?> parent;
 
@@ -102,6 +107,7 @@ public class ResolverUtil<T> {
    * A Test that checks to see if each class is annotated with a specific annotation. If it
    * is, then the test returns true, otherwise false.
    */
+  // 判断是否有注解
   public static class AnnotatedWith implements Test {
     private Class<? extends Annotation> annotation;
 
@@ -213,13 +219,16 @@ public class ResolverUtil<T> {
    * @param packageName the name of the package from which to start scanning for
    *        classes, e.g. {@code net.sourceforge.stripes}
    */
+  // 根据条件找到指定类, 根据不同的策略找到类
   public ResolverUtil<T> find(Test test, String packageName) {
     String path = getPackagePath(packageName);
 
     try {
+      // 获取路径下的所有文件
       List<String> children = VFS.getInstance().list(path);
       for (String child : children) {
         if (child.endsWith(".class")) {
+          // 如果匹配的话就添加到结果集
           addIfMatching(test, child);
         }
       }
@@ -250,12 +259,13 @@ public class ResolverUtil<T> {
   @SuppressWarnings("unchecked")
   protected void addIfMatching(Test test, String fqn) {
     try {
+      // 获得全类名
       String externalName = fqn.substring(0, fqn.indexOf('.')).replace('/', '.');
       ClassLoader loader = getClassLoader();
       if (log.isDebugEnabled()) {
         log.debug("Checking to see if class " + externalName + " matches criteria [" + test + "]");
       }
-
+      // 加载类
       Class<?> type = loader.loadClass(externalName);
       if (test.matches(type)) {
         matches.add((Class<T>) type);

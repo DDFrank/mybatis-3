@@ -32,13 +32,16 @@ import org.apache.ibatis.logging.LogFactory;
  * 
  * @author Ben Gunter
  */
+// 虚拟文件系统 抽象类，用来查找指定路径下的文件们
 public abstract class VFS {
   private static final Log log = LogFactory.getLog(VFS.class);
 
   /** The built-in implementations. */
+  // 内置的 VFS 实现类的数组
   public static final Class<?>[] IMPLEMENTATIONS = { JBoss6VFS.class, DefaultVFS.class };
 
   /** The list to which implementations are added by {@link #addImplClass(Class)}. */
+  // 自定义的 VFS 实现类的数组
   public static final List<Class<? extends VFS>> USER_IMPLEMENTATIONS = new ArrayList<>();
 
   /** Singleton instance holder. */
@@ -54,6 +57,7 @@ public abstract class VFS {
 
       // Try each implementation class until a valid one is found
       VFS vfs = null;
+      // 巡检找到一个符合的 vfs
       for (int i = 0; vfs == null || !vfs.isValid(); i++) {
         Class<? extends VFS> impl = impls.get(i);
         try {
@@ -85,6 +89,7 @@ public abstract class VFS {
    * Get the singleton {@link VFS} instance. If no {@link VFS} implementation can be found for the
    * current environment, then this method returns null.
    */
+  // 获取单例
   public static VFS getInstance() {
     return VFSHolder.INSTANCE;
   }

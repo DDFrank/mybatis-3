@@ -24,7 +24,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.Properties;
-
+/*
+* 利用 ClassLoaderWrapper 加载各种资源，并封装为不同的输出
+* */
 /**
  * A class to simplify access to resources through the classloader.
  *

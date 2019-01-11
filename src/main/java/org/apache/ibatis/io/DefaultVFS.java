@@ -51,6 +51,7 @@ public class DefaultVFS extends VFS {
   }
 
   @Override
+  // 列出指定路径下的所有资源
   public List<String> list(URL url, String path) throws IOException {
     InputStream is = null;
     try {
@@ -223,6 +224,7 @@ public class DefaultVFS extends VFS {
     }
 
     // If the file part of the URL is itself a URL, then that URL probably points to the JAR
+    // 如果 Url的文件部分本身是一个U容量，那么这个URL可能是jar
     try {
       for (;;) {
         url = new URL(url.getFile());
@@ -230,6 +232,7 @@ public class DefaultVFS extends VFS {
           log.debug("Inner URL: " + url);
         }
       }
+      // 利用异常来跳出循环...
     } catch (MalformedURLException e) {
       // This will happen at some point and serves as a break in the loop
     }
@@ -237,6 +240,7 @@ public class DefaultVFS extends VFS {
     // Look for the .jar extension and chop off everything after that
     StringBuilder jarUrl = new StringBuilder(url.toExternalForm());
     int index = jarUrl.lastIndexOf(".jar");
+    // 判断是否以 .jar 结尾
     if (index >= 0) {
       jarUrl.setLength(index + 4);
       if (log.isDebugEnabled()) {
