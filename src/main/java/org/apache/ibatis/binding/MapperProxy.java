@@ -34,7 +34,9 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
 
   private static final long serialVersionUID = -6424540398559729838L;
   private final SqlSession sqlSession;
+  // Mapper 接口
   private final Class<T> mapperInterface;
+
   private final Map<Method, MapperMethod> methodCache;
 
   public MapperProxy(SqlSession sqlSession, Class<T> mapperInterface, Map<Method, MapperMethod> methodCache) {
@@ -46,14 +48,17 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     try {
+      // 如果是 Object 定义的方法，直接调用
       if (Object.class.equals(method.getDeclaringClass())) {
         return method.invoke(this, args);
+        // 支持 JDK8 default 方法
       } else if (isDefaultMethod(method)) {
         return invokeDefaultMethod(proxy, method, args);
       }
     } catch (Throwable t) {
       throw ExceptionUtil.unwrapThrowable(t);
     }
+    // 默认从 缓存中获取方法，如果不存在，就进行创建，并进行缓存
     final MapperMethod mapperMethod = cachedMapperMethod(method);
     return mapperMethod.execute(sqlSession, args);
   }
@@ -62,6 +67,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     return methodCache.computeIfAbsent(method, k -> new MapperMethod(mapperInterface, method, sqlSession.getConfiguration()));
   }
 
+  // 调用接口的默认方法
   private Object invokeDefaultMethod(Object proxy, Method method, Object[] args)
       throws Throwable {
     final Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class
